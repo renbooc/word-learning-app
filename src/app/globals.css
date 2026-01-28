@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Comic+Neue:wght@300;400;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Educational Platform Color Palette - From Skill */
+  --primary: #4F46E5;
+  /* Indigo 600 */
+  --primary-light: #EEF2FF;
+  /* Indigo 50 */
+  --primary-dark: #3730A3;
+  /* Indigo 800 */
+  --secondary: #818CF8;
+  /* Indigo 400 */
+  --accent: #F97316;
+  /* Orange 500 (CTA) */
+  --success: #22C55E;
+  /* Green 500 */
+  --background: #EEF2FF;
+  /* Indigo 50 - Soft Background */
+  --foreground: #1E1B4B;
+  /* Indigo 950 - Deep Text */
+
+  --slate-50: #F8FAFC;
+  --slate-100: #F1F5F9;
+  --slate-200: #E2E8F0;
+  --slate-300: #CBD5E1;
+  --slate-400: #94A3B8;
+  --slate-500: #64748B;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1E293B;
+  --slate-900: #0F172A;
+
+  /* Claymorphism Shadow Tokens */
+  --clay-shadow: 10px 10px 20px rgba(79, 70, 229, 0.1),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.8),
+    inset -6px -6px 12px rgba(79, 70, 229, 0.05);
+  --clay-shadow-hover: 15px 15px 30px rgba(79, 70, 229, 0.15),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.9),
+    inset -8px -8px 16px rgba(79, 70, 229, 0.08);
+  --clay-shadow-pressed: 5px 5px 10px rgba(79, 70, 229, 0.1),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.8),
+    inset -4px -4px 8px rgba(79, 70, 229, 0.05);
+
+  /* Typography */
+  --font-heading: 'Baloo 2', 'Space Grotesk', sans-serif;
+  --font-body: 'Comic Neue', 'Inter', sans-serif;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+
+  --color-slate-50: var(--slate-50);
+  --color-slate-100: var(--slate-100);
+  --color-slate-200: var(--slate-200);
+  --color-slate-300: var(--slate-300);
+  --color-slate-400: var(--slate-400);
+  --color-slate-500: var(--slate-500);
+  --color-slate-600: var(--slate-600);
+  --color-slate-700: var(--slate-700);
+  --color-slate-800: var(--slate-800);
+  --color-slate-900: var(--slate-900);
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow-y: auto;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(129, 140, 248, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.1) 0px, transparent 50%);
+}
+
+/* Claymorphism Card Styles */
+.premium-card {
+  background: #FFFFFF;
+  border-radius: 28px;
+  box-shadow: var(--clay-shadow);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--clay-shadow-hover);
+}
+
+.premium-card:active {
+  transform: translateY(-1px);
+  box-shadow: var(--clay-shadow-pressed);
+}
+
+/* Glass Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  border-radius: 24px;
+}
+
+/* Premium Buttons - Claymorphism style */
+.btn-clay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.btn-clay-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow:
+    0 4px 0 var(--primary-dark),
+    0 8px 20px rgba(79, 70, 229, 0.3);
+}
+
+.btn-clay-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0 var(--primary-dark),
+    0 10px 25px rgba(79, 70, 229, 0.35);
+}
+
+.btn-clay-primary:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 var(--primary-dark),
+    0 4px 10px rgba(79, 70, 229, 0.2);
+}
+
+/* Specific for spelling game input */
+.premium-input {
+  background: #FFFFFF;
+  border-radius: 18px;
+  border: 2px solid var(--slate-100);
+  padding: 14px 20px;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.premium-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-light), inset 2px 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Custom Scrollbar - Playful */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 5px;
+  border: 2px solid var(--primary-light);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Typography Overrides */
+h1,
+h2,
+h3,
+h4,
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+/* Utilities */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
