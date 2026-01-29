@@ -129,7 +129,7 @@ export function AuthView() {
                                             type="text"
                                             required
                                             placeholder="选择你的社区昵称"
-                                            className="premium-input w-full pl-12 bg-white/50 border-white/50 focus:bg-white"
+                                            className="premium-input w-full !pl-12 bg-white/50 border-white/50 focus:bg-white"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
                                         />
@@ -145,7 +145,7 @@ export function AuthView() {
                                         type="email"
                                         required
                                         placeholder="your@email.com"
-                                        className="premium-input w-full pl-12 bg-white/50 border-white/50 focus:bg-white"
+                                        className="premium-input w-full !pl-12 bg-white/50 border-white/50 focus:bg-white"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
@@ -160,7 +160,7 @@ export function AuthView() {
                                         type={showPassword ? "text" : "password"}
                                         required
                                         placeholder="••••••••"
-                                        className="premium-input w-full pl-12 pr-12 bg-white/50 border-white/50 focus:bg-white"
+                                        className="premium-input w-full !pl-12 !pr-12 bg-white/50 border-white/50 focus:bg-white"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />

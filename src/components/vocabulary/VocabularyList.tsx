@@ -259,7 +259,7 @@ export function VocabularyList() {
                                 <input
                                     type="text"
                                     placeholder="搜索全站词库或自定义词义..."
-                                    className="premium-input w-full pl-14 h-14 bg-white/50 focus:bg-white"
+                                    className="premium-input w-full !pl-14 h-14 bg-white/50 focus:bg-white"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
