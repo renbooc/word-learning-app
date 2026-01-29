@@ -66,7 +66,7 @@ export function SpellingGame({ words, onComplete }: SpellingGameProps) {
         if (normalizedInput === normalizedWord) {
             setIsCorrect(true);
             updateSRS(currentWord.id, true);
-            const points = attempts === 0 ? 10 : 5;
+            const points = attempts === 0 ? 2 : 1;
             setScore(prev => prev + points);
             updateScore(points);
             soundManager.playCorrect();
@@ -79,6 +79,8 @@ export function SpellingGame({ words, onComplete }: SpellingGameProps) {
             setIsCorrect(false);
             updateSRS(currentWord.id, false);
             setAttempts(prev => prev + 1);
+            setScore(prev => Math.max(0, prev - 1));
+            updateScore(-1);
             soundManager.playIncorrect();
 
             setTimeout(() => {

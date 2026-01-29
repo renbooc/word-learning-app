@@ -13,7 +13,8 @@ import {
     LanguageIcon,
     SpeakerWaveIcon,
     BoltIcon,
-    ArrowPathIcon
+    ArrowPathIcon,
+    SparklesIcon
 } from '@heroicons/react/24/outline';
 
 export function SettingsView() {
@@ -22,6 +23,8 @@ export function SettingsView() {
         userProgress,
         preferredAudioEngine,
         setPreferredAudioEngine,
+        theme,
+        setTheme,
         logout,
         setActiveTab,
         syncProgressToCloud,
@@ -51,6 +54,36 @@ export function SettingsView() {
                             </div>
                         </div>
                         <SoundToggle className="bg-[var(--slate-50)] hover:bg-[var(--slate-100)]" />
+                    </div>
+
+                    <div className="p-6 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-inner">
+                                <SparklesIcon className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <p className="font-bold text-[var(--foreground)] font-heading text-lg">显示主题</p>
+                                <p className="text-sm text-[var(--slate-500)] font-bold">切换明亮或暗黑模式</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-1 p-1 bg-slate-50 rounded-2xl border border-slate-100">
+                            {[
+                                { id: 'light', label: '🌞' },
+                                { id: 'dark', label: '🌙' },
+                                { id: 'system', label: '🖥️' }
+                            ].map((t) => (
+                                <button
+                                    key={t.id}
+                                    onClick={() => setTheme(t.id as any)}
+                                    className={cn(
+                                        "px-4 py-2 rounded-xl text-xs font-black transition-all",
+                                        theme === t.id ? "bg-white text-indigo-600 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                                    )}
+                                >
+                                    {t.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="p-6 flex items-center justify-between">

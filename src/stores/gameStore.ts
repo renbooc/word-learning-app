@@ -41,8 +41,9 @@ interface GameStore {
   currentStudySession: StudySession | null;
   studyHistory: StudySession[];
 
-  // Navigation
+  // Navigation & Theme
   activeTab: string;
+  theme: 'light' | 'dark' | 'system';
   preferredAudioEngine: 'premium' | 'standard';
 
   // Actions
@@ -61,6 +62,7 @@ interface GameStore {
   addStudyHistory: (session: StudySession) => void;
   setGameState: (state: 'idle' | 'playing' | 'paused' | 'completed') => void;
   setActiveTab: (tab: string) => void;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
   setPreferredAudioEngine: (engine: 'premium' | 'standard') => void;
   addWord: (word: Word) => void;
   updateWord: (wordId: string, updates: Partial<Word>) => void;
@@ -121,6 +123,7 @@ export const useGameStore = create<GameStore>()(
       currentStudySession: null,
       studyHistory: [],
       activeTab: '主页',
+      theme: 'system',
       preferredAudioEngine: 'premium',
       toasts: [],
 
@@ -250,7 +253,7 @@ export const useGameStore = create<GameStore>()(
           words,
           startTime: new Date(),
           score: 0,
-          maxScore: words.length * 10,
+          maxScore: words.length * 2,
           accuracy: 0,
           completed: false,
         },
@@ -358,6 +361,7 @@ export const useGameStore = create<GameStore>()(
 
       setGameState: (state) => set({ gameState: state }),
       setActiveTab: (tab) => set({ activeTab: tab }),
+      setTheme: (theme) => set({ theme }),
       setPreferredAudioEngine: (preferredAudioEngine) => set({ preferredAudioEngine }),
 
       // 词书 Actions
@@ -507,6 +511,7 @@ export const useGameStore = create<GameStore>()(
         achievements: state.achievements,
         studyHistory: state.studyHistory,
         activeTab: state.activeTab,
+        theme: state.theme,
         preferredAudioEngine: state.preferredAudioEngine,
         customWords: state.customWords,
         user: state.user,

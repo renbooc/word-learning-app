@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/stores/gameStore';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -129,29 +130,96 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* Spaced Repetition Alert */}
+      {/* Ebbinghaus Review Hub - Fixed UI for maximum clarity and aesthetics */}
       {wordsDueForReview.length > 0 && (
-        <Card variant="premium" className="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white p-10 py-12 relative overflow-hidden group border-none">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
-            <SparklesIcon className="w-48 h-48" />
+        <div className="space-y-6 fade-in">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-indigo-600 rounded-full" />
+              <h3 className="text-2xl font-black text-slate-900 font-heading">复习工作台</h3>
+            </div>
+            <span className="px-4 py-1.5 bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-black uppercase rounded-full shadow-sm">
+              艾宾浩斯记忆曲线已激活
+            </span>
           </div>
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
-            <div className="space-y-4 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-xs font-black uppercase tracking-widest">
-                <BoltIcon className="w-4 h-4" /> 最佳复习时间
+
+          <div
+            className="rounded-[2.5rem] text-white p-8 lg:p-12 relative overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-indigo-200/50"
+            style={{ background: 'linear-gradient(135deg, #4338ca 0%, #312e81 100%)' }}
+          >
+            {/* Background Decorative Elements */}
+            <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+            <SparklesIcon className="absolute top-10 right-10 w-32 h-32 opacity-10 pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-12">
+              <div className="space-y-6 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-400/20 text-amber-300 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-400/30">
+                  <BoltIcon className="w-3.5 h-3.5" /> 黄金复习周期
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-4xl lg:text-6xl font-black font-heading tracking-tight leading-none">
+                    待复习: <span className="text-amber-400">{wordsDueForReview.length}</span>
+                  </h3>
+                  <p className="text-indigo-100 font-bold text-lg lg:text-xl leading-relaxed opacity-90">
+                    你的大脑记忆已经过半，现在复习可节省 <span className="text-white underline underline-offset-4 decoration-amber-400/50">80%</span> 的重学时间。
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-4 pt-2">
+                  <Button
+                    variant="primary"
+                    className="!bg-white !text-indigo-900 hover:!bg-indigo-50 border-none px-10 py-6 h-auto text-lg font-black shadow-[0_20px_40px_rgba(0,0,0,0.25)] rounded-[1.5rem] group/btn transition-all active:scale-95"
+                    onClick={() => handleStartGame('flashcard', 'review')}
+                  >
+                    <AcademicCapIcon className="w-7 h-7 mr-3 transition-transform group-hover/btn:scale-110" /> 立即开始温故
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="bg-white/10 backdrop-blur-md !text-white hover:bg-white/20 border-2 border-white/20 px-8 py-6 h-auto text-base font-black rounded-[1.5rem]"
+                    onClick={() => handleStartGame('spelling', 'review')}
+                  >
+                    <PencilSquareIcon className="w-6 h-6 mr-2" /> 拼写锁定
+                  </Button>
+                </div>
               </div>
-              <h3 className="text-5xl font-black font-heading tracking-tight">艾宾浩斯提醒</h3>
-              <p className="text-indigo-100 text-xl font-bold max-w-xl leading-relaxed">
-                你在 <span className="text-white underline">{currentBook?.name}</span> 中有 <span className="text-white px-2 py-0.5 bg-indigo-700/50 rounded-lg">{wordsDueForReview.length}</span> 个单词需要复习。
-              </p>
-            </div>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button variant="primary" className="bg-white text-indigo-600 hover:bg-slate-50 border-none px-10 py-5 text-lg shadow-2xl" onClick={() => handleStartGame('flashcard', 'review')}>
-                开始精准复习
-              </Button>
+
+              {/* Word Cards Reel */}
+              <div className="xl:w-1/3 w-full">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-200/60 mb-4 ml-1">待复习词汇预览</p>
+                <div className="flex xl:flex-col gap-4 overflow-x-auto xl:max-h-[300px] xl:overflow-y-auto no-scrollbar pb-4 xl:pb-0 pr-4">
+                  {wordsDueForReview.slice(0, 10).map((word) => (
+                    <div
+                      key={word.id}
+                      className="shrink-0 xl:w-full w-48 p-5 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/10 hover:bg-white/15 transition-all group/item"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-black text-indigo-200/80 uppercase tracking-tighter">Due Today</span>
+                        <button
+                          onClick={() => {
+                            const utterance = new SpeechSynthesisUtterance(word.word);
+                            utterance.lang = 'en-US';
+                            window.speechSynthesis.speak(utterance);
+                          }}
+                          className="text-white/40 hover:text-white transition-colors"
+                        >
+                          <SpeakerWaveIcon className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <h4 className="text-2xl font-black text-white group-hover/item:text-amber-300 transition-colors">{word.word}</h4>
+                      <p className="text-xs text-indigo-100/60 font-bold italic line-clamp-1 mt-1">{word.definition}</p>
+                    </div>
+                  ))}
+                  {wordsDueForReview.length > 10 && (
+                    <div className="shrink-0 xl:w-full w-48 flex items-center justify-center p-6 bg-black/20 rounded-2xl border border-dashed border-white/20 text-indigo-200 text-xs font-black uppercase">
+                      + {wordsDueForReview.length - 10} 更多单词
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </Card>
+        </div>
       )}
 
       {/* Game Modes Section */}

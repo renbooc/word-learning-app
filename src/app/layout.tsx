@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthListener } from "@/components/auth/AuthListener";
+import { ThemeManager } from "@/components/layout/ThemeManager";
 
 export const metadata: Metadata = {
   title: "LexiFlow - Premium Word Learning Experience",
@@ -14,8 +15,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className="scroll-smooth">
+    <html lang="zh-CN" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const storage = localStorage.getItem('word-game-storage');
+                const theme = storage ? JSON.parse(storage).state.theme : 'system';
+                const actualTheme = theme === 'system' 
+                  ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                  : theme;
+                document.documentElement.setAttribute('data-theme', actualTheme);
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className="antialiased min-h-screen bg-[var(--background)]">
+        <ThemeManager />
         <AuthListener />
         {children}
       </body>

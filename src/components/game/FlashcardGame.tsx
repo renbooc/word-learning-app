@@ -64,8 +64,8 @@ export function FlashcardGame({ words, onComplete }: FlashcardGameProps) {
       markAsLearned(currentWord.id);
       updateSRS(currentWord.id, true);
       setStudiedWords(new Set([...studiedWords, currentWord.id]));
-      setScore(score + 5);
-      updateScore(5);
+      setScore(score + 1);
+      updateScore(1);
       soundManager.playCorrect();
       setShowProgress(true);
       setTimeout(() => setShowProgress(false), 1000);
@@ -78,8 +78,8 @@ export function FlashcardGame({ words, onComplete }: FlashcardGameProps) {
       markAsMastered(currentWord.id);
       updateSRS(currentWord.id, true);
       setStudiedWords(new Set([...studiedWords, currentWord.id]));
-      setScore(score + 10);
-      updateScore(10);
+      setScore(score + 2);
+      updateScore(2);
       soundManager.playCorrect();
       setShowProgress(true);
       setTimeout(() => setShowProgress(false), 1000);

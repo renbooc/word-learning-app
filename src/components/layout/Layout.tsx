@@ -53,13 +53,13 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)]">
       {/* Mobile Header */}
-      <header className="lg:hidden sticky top-0 z-30 px-6 py-4 bg-white/70 backdrop-blur-xl border-b border-[var(--color-slate-200)]">
+      <header className="lg:hidden sticky top-0 z-30 px-6 py-4 bg-[var(--card-bg)]/80 backdrop-blur-xl border-b border-[var(--border-color)]">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 flex items-center justify-center bg-[var(--color-primary)] rounded-lg">
+            <div className="w-8 h-8 flex items-center justify-center bg-[var(--primary)] rounded-lg">
               <SparklesIcon className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-[var(--color-slate-900)] font-heading">
+            <span className="text-xl font-bold tracking-tight text-[var(--foreground)] font-heading">
               LexiFlow
             </span>
           </div>
@@ -84,10 +84,10 @@ export function Layout({ children }: LayoutProps) {
           <div className="flex flex-col h-[calc(100vh-5rem)] sticky top-10">
             {/* Logo */}
             <div className="flex items-center space-x-3 px-2 py-4 mb-10">
-              <div className="w-10 h-10 flex items-center justify-center bg-[var(--color-primary)] rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.3)]">
+              <div className="w-10 h-10 flex items-center justify-center bg-[var(--primary)] rounded-xl shadow-[0_4px_12px_rgba(79,70,229,0.3)]">
                 <SparklesIcon className="w-6 h-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-[var(--color-slate-900)] font-heading">
+              <h1 className="text-2xl font-bold text-[var(--foreground)] font-heading">
                 LexiFlow
               </h1>
             </div>
@@ -115,7 +115,7 @@ export function Layout({ children }: LayoutProps) {
                           className="h-7 w-7 rounded-lg shadow-sm"
                           alt="avatar"
                         />
-                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-[var(--card-bg)] rounded-full" />
                       </div>
                     ) : (
                       <Icon className={cn("h-6 w-6 stroke-[2.5]", isCurrent ? "text-white" : "text-[var(--primary)]")} />
@@ -128,8 +128,8 @@ export function Layout({ children }: LayoutProps) {
 
             {/* Progress Card */}
             <div className="mt-auto pt-8">
-              <Card variant="premium" className="p-6 border-transparent shadow-xl bg-white relative overflow-hidden group">
-                <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-500" />
+              <Card variant="premium" className="p-6 border-transparent shadow-xl relative overflow-hidden group">
+                <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-[var(--primary-light)] rounded-full opacity-50 group-hover:scale-110 transition-transform duration-500" />
 
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-2">
@@ -139,24 +139,24 @@ export function Layout({ children }: LayoutProps) {
                         {getUserTitle(userProgress.level).title}
                       </span>
                     </div>
-                    <div className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[10px] font-black italic">
+                    <div className="px-2 py-0.5 rounded-md bg-[var(--primary-light)] text-[var(--primary)] text-[10px] font-black italic">
                       LV {userProgress.level}
                     </div>
                   </div>
 
                   <div className="mb-4">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">经验值 (EXP)</div>
-                    <div className="text-lg font-black text-slate-900 font-heading leading-none">
-                      {userProgress.totalPoints} <span className="text-xs text-slate-300 font-bold">Total PTS</span>
+                    <div className="text-[10px] font-bold text-[var(--slate-400)] uppercase tracking-widest mb-1">经验值 (EXP)</div>
+                    <div className="text-lg font-black text-[var(--foreground)] font-heading leading-none">
+                      {userProgress.totalPoints} <span className="text-xs text-[var(--slate-300)] font-bold">Total PTS</span>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex justify-between text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                    <div className="flex justify-between text-[9px] font-black text-[var(--slate-400)] uppercase tracking-widest">
                       <span>Next Level</span>
                       <span>{Math.round(calculateProgress(userProgress.totalPoints))}%</span>
                     </div>
-                    <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 shadow-inner">
+                    <div className="h-2.5 bg-[var(--slate-100)] rounded-full overflow-hidden p-0.5 shadow-inner">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${calculateProgress(userProgress.totalPoints)}%` }}
@@ -168,7 +168,7 @@ export function Layout({ children }: LayoutProps) {
               </Card>
 
               <div className="mt-6 flex items-center justify-between px-2">
-                <SoundToggle className="bg-transparent hover:bg-slate-100 p-2 rounded-lg" />
+                <SoundToggle className="bg-transparent hover:bg-[var(--slate-100)] p-2 rounded-lg" />
               </div>
             </div>
           </div>
@@ -190,12 +190,12 @@ export function Layout({ children }: LayoutProps) {
             </div>
 
             <div className="flex items-center gap-4">
-              <Card variant="glass" className="flex items-center gap-6 px-8 py-4 rounded-3xl shadow-sm border-white">
+              <Card variant="glass" className="flex items-center gap-6 px-8 py-4 rounded-3xl shadow-sm border-[var(--card-border)]">
                 <div className="flex flex-col items-end">
                   <span className="text-[10px] font-bold text-[var(--slate-400)] uppercase tracking-widest">今日能量</span>
                   <span className="text-2xl font-bold font-heading text-[var(--foreground)]">{userProgress.totalPoints}</span>
                 </div>
-                <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center shadow-inner">
+                <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center shadow-inner">
                   <FireIcon className="w-8 h-8 text-orange-500" />
                 </div>
               </Card>
@@ -227,13 +227,13 @@ export function Layout({ children }: LayoutProps) {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed inset-y-0 left-0 z-50 w-80 lg:hidden flex"
             >
-              <div className="bg-white w-full h-full p-6 flex flex-col border-r border-slate-200">
+              <div className="bg-[var(--card-bg)] w-full h-full p-6 flex flex-col border-r border-[var(--border-color)]">
                 <div className="flex items-center justify-between mb-12">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                       <SparklesIcon className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xl font-bold text-[var(--color-slate-900)] font-heading">LexiFlow</span>
+                    <span className="text-xl font-bold text-[var(--foreground)] font-heading">LexiFlow</span>
                   </div>
                   <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setIsSidebarOpen(false)}>
                     <XMarkIcon className="h-6 w-6" />
@@ -258,8 +258,8 @@ export function Layout({ children }: LayoutProps) {
                   })}
                 </nav>
 
-                <div className="mt-auto border-t border-slate-100 pt-6">
-                  <div className="flex items-center justify-between text-sm text-slate-500 font-medium">
+                <div className="mt-auto border-t border-[var(--border-color)] pt-6">
+                  <div className="flex items-center justify-between text-sm text-[var(--slate-500)] font-medium">
                     <span>Sound Effects</span>
                     <SoundToggle />
                   </div>

@@ -85,11 +85,13 @@ export function QuizGame({ words, onComplete }: QuizGameProps) {
         }
 
         if (correct) {
-            setScore(prev => prev + 10);
-            updateScore(10);
+            setScore(prev => prev + 2);
+            updateScore(2);
             soundManager.playCorrect();
             playTTS(currentWord?.word || '');
         } else {
+            setScore(prev => Math.max(0, prev - 1));
+            updateScore(-1);
             soundManager.playIncorrect();
         }
 

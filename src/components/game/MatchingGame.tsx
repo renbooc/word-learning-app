@@ -130,9 +130,9 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
             setShowCombo(true);
             setTimeout(() => setShowCombo(false), 800);
 
-            const basePoints = 20;
-            const comboBonus = Math.min(newCombo * 5, 50); // Max 50 bonus
-            const speedBonus = Math.ceil(timeLeft / 2);
+            const basePoints = 1;
+            const comboBonus = newCombo > 1 ? 2 : 0;
+            const speedBonus = timeLeft > 15 ? 1 : 0;
             const totalPoints = basePoints + comboBonus + speedBonus;
 
             setScore(prev => prev + totalPoints);
@@ -151,6 +151,8 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
             // Wrong match
             setWrongId(item.id);
             setCombo(0);
+            setScore(prev => Math.max(0, prev - 1));
+            updateScore(-1);
             soundManager.playIncorrect();
             setTimeout(() => {
                 setWrongId(null);
@@ -259,7 +261,7 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
                                 COMBO x{combo}
                             </span>
                             <span className="text-xl font-bold text-indigo-600 uppercase tracking-tighter bg-white px-4 py-1 rounded-full shadow-lg">
-                                Match! +{20 + combo * 5}
+                                Match! +{1 + (combo > 1 ? 2 : 0)}
                             </span>
                         </div>
                     </motion.div>
