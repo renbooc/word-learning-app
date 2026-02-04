@@ -1,0 +1,6 @@
+*.bin filter=lfs
+*.pt filter=lfs
+*.pth filter=lfs
+*.ckpt filter=lfs
+*.h5 filter=lfs
+*.model filter=lfs

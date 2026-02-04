@@ -45,7 +45,7 @@ export function Toast({ message, type = 'info', onClose, duration = 3000 }: Toas
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100, transition: { duration: 0.2 } }}
             className={cn(
-                "fixed top-24 right-6 z-[10000] flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl min-w-[300px] max-w-sm backdrop-blur-md",
+                "fixed top-24 right-6 z-[10000] flex items-center gap-3 px-6 py-4 rounded-2xl border min-w-[300px] max-w-sm",
                 bgColors[type]
             )}
         >

@@ -20,13 +20,14 @@ import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 
 interface FlashcardGameProps {
   words: Word[];
-  onComplete: (score: number, maxScore: number) => void;
+  onComplete: (stats: { score: number; maxScore: number; correctAnswers: number; totalQuestions: number; words: Word[] }) => void;
 }
 
 export function FlashcardGame({ words, onComplete }: FlashcardGameProps) {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [studiedWords, setStudiedWords] = useState<Set<string>>(new Set());
+  const [correctCount, setCorrectCount] = useState(0);
   const [score, setScore] = useState(0);
   const [showProgress, setShowProgress] = useState(false);
   const soundManager = SoundManager.getInstance();
@@ -65,12 +66,15 @@ export function FlashcardGame({ words, onComplete }: FlashcardGameProps) {
       updateSRS(currentWord.id, true);
       setStudiedWords(new Set([...studiedWords, currentWord.id]));
       setScore(score + 1);
-      updateScore(1);
+      setCorrectCount(prev => prev + 1);
+      updateScore(1, true);
       soundManager.playCorrect();
       setShowProgress(true);
       setTimeout(() => setShowProgress(false), 1000);
+      nextWord(score + 1, correctCount + 1);
+    } else {
+      nextWord();
     }
-    nextWord();
   };
 
   const handleMarkMastered = () => {
@@ -79,28 +83,40 @@ export function FlashcardGame({ words, onComplete }: FlashcardGameProps) {
       updateSRS(currentWord.id, true);
       setStudiedWords(new Set([...studiedWords, currentWord.id]));
       setScore(score + 2);
-      updateScore(2);
+      setCorrectCount(prev => prev + 1);
+      updateScore(2, true);
       soundManager.playCorrect();
       setShowProgress(true);
       setTimeout(() => setShowProgress(false), 1000);
+      nextWord(score + 2, correctCount + 1);
+    } else {
+      nextWord();
     }
-    nextWord();
   };
 
   const handleSkip = () => {
     if (currentWord) {
       updateSRS(currentWord.id, false);
+      updateScore(0, false);
     }
     soundManager.playClick();
     nextWord();
   };
 
-  const nextWord = () => {
+  const nextWord = (finalScore?: number, finalCorrectCount?: number) => {
+    const s = finalScore !== undefined ? finalScore : score;
+    const c = finalCorrectCount !== undefined ? finalCorrectCount : correctCount;
     setIsFlipped(false);
     if (currentWordIndex < gameWords.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
     } else {
-      onComplete(score, words.length * 10);
+      onComplete({
+        score: s,
+        maxScore: words.length * 2,
+        correctAnswers: c,
+        totalQuestions: words.length,
+        words: gameWords
+      });
     }
   };
 
@@ -109,6 +125,7 @@ export function FlashcardGame({ words, onComplete }: FlashcardGameProps) {
     setIsFlipped(false);
     setStudiedWords(new Set());
     setScore(0);
+    setCorrectCount(0);
     setShowProgress(false);
     setGameWords(shuffleArray(words));
   };

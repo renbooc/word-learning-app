@@ -18,7 +18,7 @@ import {
 
 interface MatchingGameProps {
     words: Word[];
-    onComplete: (score: number, maxScore: number) => void;
+    onComplete: (stats: { score: number; maxScore: number; correctAnswers: number; totalQuestions: number; words: Word[] }) => void;
 }
 
 interface MatchingPair {
@@ -39,6 +39,9 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
     const [showCombo, setShowCombo] = useState(false);
     const [isGameOver, setIsGameOver] = useState(false);
 
+    const [gamePool, setGamePool] = useState<Word[]>([]);
+    const [correctCount, setCorrectCount] = useState(0);
+
     const soundManager = SoundManager.getInstance();
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -46,14 +49,15 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
 
     // Start/Reset Game
     const initGame = () => {
-        const gamePool = shuffleArray(words).slice(0, 8); // 8 pairs for blitz
-        const wordItems: MatchingPair[] = gamePool.map(w => ({
+        const pool = shuffleArray(words).slice(0, Math.min(words.length, 10)); // Use up to 10 words
+        setGamePool(pool);
+        const wordItems: MatchingPair[] = pool.map(w => ({
             id: `word-${w.id}`,
             text: w.word,
             type: 'word',
             wordId: w.id
         }));
-        const defItems: MatchingPair[] = gamePool.map(w => ({
+        const defItems: MatchingPair[] = pool.map(w => ({
             id: `def-${w.id}`,
             text: w.definition,
             type: 'definition',
@@ -64,6 +68,7 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
         setMatchedIds(new Set());
         setSelectedId(null);
         setScore(0);
+        setCorrectCount(0);
         setTimeLeft(30);
         setCombo(0);
         setIsGameOver(false);
@@ -91,11 +96,19 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
         };
     }, [timeLeft, isGameOver, matchedIds.size, items.length]);
 
-    const handleGameOver = () => {
+    const handleGameOver = (finalScore?: number, finalCorrectCount?: number) => {
         setIsGameOver(true);
         if (timerRef.current) clearInterval(timerRef.current);
+        const s = finalScore !== undefined ? finalScore : score;
+        const c = finalCorrectCount !== undefined ? finalCorrectCount : correctCount;
         setTimeout(() => {
-            onComplete(score, words.length * 10);
+            onComplete({
+                score: s,
+                maxScore: gamePool.length * 2,
+                correctAnswers: c,
+                totalQuestions: gamePool.length,
+                words: gamePool
+            });
         }, 2000);
     };
 
@@ -136,7 +149,8 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
             const totalPoints = basePoints + comboBonus + speedBonus;
 
             setScore(prev => prev + totalPoints);
-            updateScore(totalPoints);
+            setCorrectCount(prev => prev + 1);
+            updateScore(totalPoints, true);
             updateSRS(item.wordId, true);
             soundManager.playCorrect();
 
@@ -145,7 +159,7 @@ export function MatchingGame({ words, onComplete }: MatchingGameProps) {
 
             if (newMatched.size === items.length) {
                 // All cleared!
-                handleGameOver();
+                handleGameOver(score + totalPoints, correctCount + 1);
             }
         } else {
             // Wrong match

@@ -21,7 +21,7 @@ import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 
 interface QuizGameProps {
     words: Word[];
-    onComplete: (score: number, maxScore: number) => void;
+    onComplete: (stats: { score: number; maxScore: number; correctAnswers: number; totalQuestions: number; words: Word[] }) => void;
 }
 
 interface QuizQuestion {
@@ -35,6 +35,7 @@ export function QuizGame({ words, onComplete }: QuizGameProps) {
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [score, setScore] = useState(0);
+    const [correctCount, setCorrectCount] = useState(0);
     const [gameWords, setGameWords] = useState<Word[]>([]);
     const soundManager = SoundManager.getInstance();
 
@@ -86,27 +87,36 @@ export function QuizGame({ words, onComplete }: QuizGameProps) {
 
         if (correct) {
             setScore(prev => prev + 2);
-            updateScore(2);
+            setCorrectCount(prev => prev + 1);
+            updateScore(2, true);
             soundManager.playCorrect();
             playTTS(currentWord?.word || '');
         } else {
             setScore(prev => Math.max(0, prev - 1));
-            updateScore(-1);
+            updateScore(-1, false);
             soundManager.playIncorrect();
         }
 
         setTimeout(() => {
-            nextWord();
+            nextWord(score + (correct ? 2 : -1), correct ? correctCount + 1 : correctCount);
         }, 1500);
     };
 
-    const nextWord = () => {
+    const nextWord = (finalScore?: number, finalCorrectCount?: number) => {
+        const s = finalScore !== undefined ? finalScore : score;
+        const c = finalCorrectCount !== undefined ? finalCorrectCount : correctCount;
         setSelectedOption(null);
         setIsCorrect(null);
         if (currentWordIndex < gameWords.length - 1) {
             setCurrentWordIndex(prev => prev + 1);
         } else {
-            onComplete(score, words.length * 10);
+            onComplete({
+                score: s,
+                maxScore: words.length * 2,
+                correctAnswers: c,
+                totalQuestions: words.length,
+                words: gameWords
+            });
         }
     };
 
@@ -115,6 +125,7 @@ export function QuizGame({ words, onComplete }: QuizGameProps) {
         setSelectedOption(null);
         setIsCorrect(null);
         setScore(0);
+        setCorrectCount(0);
         setGameWords(shuffleArray(words));
     };
 

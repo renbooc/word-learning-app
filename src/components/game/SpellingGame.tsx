@@ -19,7 +19,7 @@ import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 
 interface SpellingGameProps {
     words: Word[];
-    onComplete: (score: number, maxScore: number) => void;
+    onComplete: (stats: { score: number; maxScore: number; correctAnswers: number; totalQuestions: number; words: Word[] }) => void;
 }
 
 export function SpellingGame({ words, onComplete }: SpellingGameProps) {
@@ -29,6 +29,7 @@ export function SpellingGame({ words, onComplete }: SpellingGameProps) {
     const [showHint, setShowHint] = useState(false);
     const [gameWords, setGameWords] = useState<Word[]>([]);
     const [score, setScore] = useState(0);
+    const [correctCount, setCorrectCount] = useState(0);
     const [attempts, setAttempts] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
     const soundManager = SoundManager.getInstance();
@@ -68,19 +69,20 @@ export function SpellingGame({ words, onComplete }: SpellingGameProps) {
             updateSRS(currentWord.id, true);
             const points = attempts === 0 ? 2 : 1;
             setScore(prev => prev + points);
-            updateScore(points);
+            if (attempts === 0) setCorrectCount(prev => prev + 1);
+            updateScore(points, attempts === 0);
             soundManager.playCorrect();
             playTTS(currentWord.word);
 
             setTimeout(() => {
-                nextWord();
+                nextWord(score + points, correctCount + (attempts === 0 ? 1 : 0));
             }, 1500);
         } else {
             setIsCorrect(false);
             updateSRS(currentWord.id, false);
             setAttempts(prev => prev + 1);
             setScore(prev => Math.max(0, prev - 1));
-            updateScore(-1);
+            updateScore(-1, false);
             soundManager.playIncorrect();
 
             setTimeout(() => {
@@ -92,7 +94,9 @@ export function SpellingGame({ words, onComplete }: SpellingGameProps) {
         }
     };
 
-    const nextWord = () => {
+    const nextWord = (finalScore?: number, finalCorrectCount?: number) => {
+        const s = finalScore !== undefined ? finalScore : score;
+        const c = finalCorrectCount !== undefined ? finalCorrectCount : correctCount;
         setIsCorrect(null);
         setUserInput('');
         setShowHint(false);
@@ -100,7 +104,13 @@ export function SpellingGame({ words, onComplete }: SpellingGameProps) {
         if (currentWordIndex < gameWords.length - 1) {
             setCurrentWordIndex(prev => prev + 1);
         } else {
-            onComplete(score, words.length * 10);
+            onComplete({
+                score: s,
+                maxScore: words.length * 2,
+                correctAnswers: c,
+                totalQuestions: words.length,
+                words: gameWords
+            });
         }
     };
 
@@ -110,6 +120,7 @@ export function SpellingGame({ words, onComplete }: SpellingGameProps) {
         setIsCorrect(null);
         setShowHint(false);
         setScore(0);
+        setCorrectCount(0);
         setAttempts(0);
         setGameWords(shuffleArray(words));
     };

@@ -54,8 +54,8 @@ interface GameStore {
   toggleFavorite: (wordId: string) => void;
   updateSRS: (wordId: string, isCorrect: boolean) => void;
   startGame: (mode: 'flashcard' | 'spelling' | 'quiz' | 'matching', words: Word[]) => void;
-  endGame: () => void;
-  updateScore: (points: number) => void;
+  endGame: (finalStats?: { score?: number; maxScore?: number; correctAnswers?: number; totalQuestions?: number; words?: Word[] }) => void;
+  updateScore: (points: number, isCorrect?: boolean) => void;
   startStudySession: () => void;
   endStudySession: () => void;
   unlockAchievement: (achievement: Achievement) => void;
@@ -253,25 +253,37 @@ export const useGameStore = create<GameStore>()(
           words,
           startTime: new Date(),
           score: 0,
-          maxScore: words.length * 2,
+          maxScore: mode === 'matching' ? 0 : words.length * 10,
+          correctAnswers: 0,
+          totalQuestions: mode === 'matching' ? 0 : words.length,
           accuracy: 0,
           completed: false,
         },
         score: 0,
       })),
 
-      endGame: () => set((state) => {
+      endGame: (finalStats) => set((state) => {
         if (state.currentSession) {
           const endTime = new Date();
+          const finalScore = finalStats?.score ?? state.score;
+          const finalMaxScore = finalStats?.maxScore ?? state.currentSession.maxScore;
+          const finalCorrectAnswers = finalStats?.correctAnswers ?? state.currentSession.correctAnswers;
+          const finalTotalQuestions = finalStats?.totalQuestions ?? state.currentSession.totalQuestions;
+          const finalWords = finalStats?.words ?? state.currentSession.words;
+
           const completedSession = {
             ...state.currentSession,
+            words: finalWords,
             endTime,
-            score: state.score,
-            accuracy: state.currentSession.maxScore > 0 ? state.score / state.currentSession.maxScore : 0,
+            score: finalScore,
+            maxScore: finalMaxScore,
+            correctAnswers: finalCorrectAnswers,
+            totalQuestions: finalTotalQuestions,
+            accuracy: finalMaxScore > 0 ? (finalCorrectAnswers / finalTotalQuestions) : 0,
             completed: true,
           };
 
-          const newPoints = state.userProgress.totalPoints + state.score;
+          const newPoints = state.userProgress.totalPoints + finalScore;
           const updatedProgress = {
             ...state.userProgress,
             totalPoints: newPoints,
@@ -282,12 +294,10 @@ export const useGameStore = create<GameStore>()(
             id: state.currentSession.id,
             startTime: state.currentSession.startTime,
             endTime: endTime,
-            wordsStudied: state.currentSession.words.length,
-            correctAnswers: state.currentSession.maxScore > 0
-              ? Math.round((state.score / state.currentSession.maxScore) * state.currentSession.words.length)
-              : 0,
+            wordsStudied: finalWords.length,
+            correctAnswers: finalCorrectAnswers,
             timeSpent: Math.round((endTime.getTime() - state.currentSession.startTime.getTime()) / 60000),
-            pointsEarned: state.score
+            pointsEarned: finalScore
           };
 
           const newState = {
@@ -295,6 +305,7 @@ export const useGameStore = create<GameStore>()(
             currentSession: completedSession,
             userProgress: updatedProgress,
             studyHistory: [...state.studyHistory, historyEntry],
+            score: finalScore
           };
           if (state.user) setTimeout(() => get().syncProgressToCloud(), 100);
           return newState;
@@ -302,10 +313,16 @@ export const useGameStore = create<GameStore>()(
         return { gameState: 'completed' as const };
       }),
 
-      updateScore: (points) => set((state) => {
+      updateScore: (points, isCorrect) => set((state) => {
         const newPoints = state.userProgress.totalPoints + points;
         const newState = {
           score: state.score + points,
+          currentSession: state.currentSession ? {
+            ...state.currentSession,
+            score: state.score + points,
+            correctAnswers: isCorrect ? state.currentSession.correctAnswers + 1 : state.currentSession.correctAnswers,
+            totalQuestions: isCorrect !== undefined ? state.currentSession.totalQuestions + 1 : state.currentSession.totalQuestions,
+          } : null,
           userProgress: {
             ...state.userProgress,
             totalPoints: newPoints,

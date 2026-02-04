@@ -25,8 +25,8 @@ export function GameContainer() {
   const { gameState, currentSession, endGame, setGameState, startGame } = useGameStore();
   const [showResults, setShowResults] = useState(false);
 
-  const handleGameComplete = (score: number, maxScore: number) => {
-    endGame();
+  const handleGameComplete = (stats: { score: number; maxScore: number; correctAnswers: number; totalQuestions: number; words: any[] }) => {
+    endGame(stats);
     setShowResults(true);
   };
 
@@ -36,7 +36,7 @@ export function GameContainer() {
   };
 
   if (showResults && currentSession) {
-    const accuracy = Math.round((currentSession.score / currentSession.maxScore) * 100);
+    const accuracy = Math.round(currentSession.accuracy * 100);
 
     return (
       <div className="max-w-2xl mx-auto p-6 fade-in">
@@ -78,7 +78,7 @@ export function GameContainer() {
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-indigo-600 font-heading">
-                    {Math.round(currentSession.accuracy * currentSession.words.length)}
+                    {currentSession.correctAnswers}
                   </div>
                   <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">正确回答</div>
                 </div>

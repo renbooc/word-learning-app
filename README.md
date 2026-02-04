@@ -1,3 +1,15 @@
+---
+title: LexiFlow - Word Learning App
+emoji: 🎯
+colorFrom: indigo
+colorTo: rose
+sdk: static
+app_file: src/app/page.tsx
+pinned: false
+license: mit
+short_description: 游戏化沉浸式英语学习平台
+---
+
 # 🎯 LexiFlow - 游戏化沉浸式英语学习平台
 
 LexiFlow 是一款基于 **Next.js 16 (App Router)** + **Supabase** + **Tailwind CSS** 构建的高端英语单词学习应用。它结合了 AI 词库解析、云端同步以及多样化的游戏挑战模式，旨在为学习者提供极致丝滑的沉浸式背词体验。

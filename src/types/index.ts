@@ -40,6 +40,8 @@ export interface GameSession {
   endTime?: Date;
   score: number;
   maxScore: number;
+  correctAnswers: number;
+  totalQuestions: number;
   accuracy: number;
   completed: boolean;
 }
