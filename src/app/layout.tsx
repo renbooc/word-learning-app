@@ -17,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        <script src="/runtime-config.js" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

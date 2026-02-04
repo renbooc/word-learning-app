@@ -67,6 +67,38 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 npm run dev
 ```
 
+## 🚀 Huggingface Spaces 部署配置
+
+由于项目使用静态导出 (`output: 'export'`)，环境变量需要在**构建后**注入。
+
+### 配置步骤：
+
+1. **在 Huggingface Spaces 的 Settings → Variables and secrets 中设置环境变量：**
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+   ```
+
+2. **创建或修改 `public/runtime-config.js` 文件**（在项目根目录）：
+   ```javascript
+   window.__RUNTIME_CONFIG__ = {
+     NEXT_PUBLIC_SUPABASE_URL: "your_project_url",
+     NEXT_PUBLIC_SUPABASE_ANON_KEY: "your_anon_key"
+   };
+   ```
+
+3. **重新部署项目**，`public/runtime-config.js` 会被自动复制到输出目录
+
+### 为什么需要这样做？
+静态导出的 Next.js 应用在构建时会将 `process.env` 变量内联到代码中。由于 Huggingface Spaces 的环境变量在构建后才可用，我们通过 `runtime-config.js` 在运行时注入配置。
+
+### 验证配置：
+部署完成后，打开浏览器开发者工具，在 Console 中输入：
+```javascript
+window.__RUNTIME_CONFIG__
+```
+确认能正确显示你的 Supabase 配置。
+
 ## 🏗️ 技术架构
 
 | 模块 | 技术选型 |
