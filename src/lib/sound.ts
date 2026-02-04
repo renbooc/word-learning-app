@@ -1,12 +1,15 @@
 // 音效管理类 - 全平台兼容与智能自适应引擎
 export class SoundManager {
-  private static instance: SoundManager;
+  private static instance: SoundManager | null = null;
   private audioContext: AudioContext | null = null;
   private enabled: boolean = true;
   private currentAudio: HTMLAudioElement | null = null;
+  private isClient: boolean = false;
 
   private constructor() {
+    // 只在客户端初始化
     if (typeof window !== 'undefined') {
+      this.isClient = true;
       const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
       if (AudioCtx) this.audioContext = new AudioCtx();
 
@@ -18,6 +21,20 @@ export class SoundManager {
   }
 
   public static getInstance(): SoundManager {
+    if (typeof window === 'undefined') {
+      // 服务端返回 mock 对象
+      return {
+        setEnabled: () => {},
+        playCorrect: () => {},
+        playIncorrect: () => {},
+        playFlip: () => {},
+        playClick: () => {},
+        playLevelUp: () => {},
+        playHighQualityTTS: () => {},
+        playBasicTTS: () => {},
+        stopAudio: () => {},
+      } as unknown as SoundManager;
+    }
     if (!SoundManager.instance) {
       SoundManager.instance = new SoundManager();
     }

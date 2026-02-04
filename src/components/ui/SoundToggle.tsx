@@ -13,21 +13,43 @@ interface SoundToggleProps {
 
 export function SoundToggle({ className }: SoundToggleProps) {
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const soundManager = SoundManager.getInstance();
+  const [isClient, setIsClient] = useState(false);
+  const [soundManager, setSoundManager] = useState<SoundManager | null>(null);
 
   useEffect(() => {
-    soundManager.setEnabled(soundEnabled);
+    setIsClient(true);
+    setSoundManager(SoundManager.getInstance());
+  }, []);
+
+  useEffect(() => {
+    if (soundManager) {
+      soundManager.setEnabled(soundEnabled);
+    }
   }, [soundEnabled, soundManager]);
 
   const toggleSound = () => {
     const newState = !soundEnabled;
     setSoundEnabled(newState);
-    soundManager.setEnabled(newState);
-
-    if (newState) {
-      soundManager.playClick();
+    if (soundManager) {
+      soundManager.setEnabled(newState);
+      if (newState) {
+        soundManager.playClick();
+      }
     }
   };
+
+  // 在服务端渲染时显示占位符
+  if (!isClient) {
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        className={cn("bg-white/50 border-2 border-transparent rounded-2xl px-4 py-2", className)}
+      >
+        <span className="text-sm font-bold text-[var(--foreground)] font-heading">音效已开启</span>
+      </Button>
+    );
+  }
 
   return (
     <Button
