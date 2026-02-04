@@ -18,20 +18,6 @@ export default function RootLayout({
     <html lang="zh-CN" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <script src="/runtime-config.js" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const storage = localStorage.getItem('word-game-storage');
-                const theme = storage ? JSON.parse(storage).state.theme : 'system';
-                const actualTheme = theme === 'system'
-                  ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-                  : theme;
-                document.documentElement.setAttribute('data-theme', actualTheme);
-              } catch (e) {}
-            `,
-          }}
-        />
       </head>
       <body className="antialiased min-h-screen bg-[var(--background)]">
         <ThemeManager />
