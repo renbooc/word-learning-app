@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { Card } from '@/components/ui/Card';
 import { UserProfile } from '@/types';
 import { TrophyIcon, FireIcon, SparklesIcon } from '@heroicons/react/24/outline';
@@ -13,7 +13,7 @@ export function CommunityView() {
 
     useEffect(() => {
         async function fetchProfiles() {
-            const { data, error } = await supabase
+            const { data, error } = await getSupabaseClient()
                 .from('profiles')
                 .select('*')
                 .order('total_points', { ascending: false })

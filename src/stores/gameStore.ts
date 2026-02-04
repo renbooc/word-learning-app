@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Word, WordBook, UserProgress, StudySession, GameSession, Achievement, AuthUser, UserProfile } from '@/types';
 import { calculateLevel } from '@/lib/utils';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { wordBooks as defaultBooks } from '@/data/wordBooks';
 
 interface GameStore {
@@ -391,6 +391,7 @@ export const useGameStore = create<GameStore>()(
       setUser: (user) => set({ user }),
       setProfile: (profile) => set({ profile }),
       logout: async () => {
+        const supabase = getSupabaseClient();
         await supabase.auth.signOut();
         set({
           user: null,
@@ -409,6 +410,8 @@ export const useGameStore = create<GameStore>()(
         const { user, userProgress, wordMetadata, customWords } = get();
         if (!user) return;
 
+        const supabase = getSupabaseClient();
+
         try {
           // 1. Sync Profile
           await supabase.from('profiles').update({
@@ -425,7 +428,7 @@ export const useGameStore = create<GameStore>()(
               user_id: user.id,
               // Cleanup frontend-only properties before sync if necessary
             }));
-            const { error: customError } = await supabase.from('custom_words').upsert(customData, { onConflict: 'id' });
+            const { error: customError } = await getSupabaseClient().from('custom_words').upsert(customData, { onConflict: 'id' });
             if (customError) console.warn('Custom words sync issue:', customError);
           }
 
@@ -442,7 +445,7 @@ export const useGameStore = create<GameStore>()(
           }));
 
           if (upsertData.length > 0) {
-            const { error: progressError } = await supabase.from('word_progress').upsert(upsertData, { onConflict: 'user_id,word_id' });
+            const { error: progressError } = await getSupabaseClient().from('word_progress').upsert(upsertData, { onConflict: 'user_id,word_id' });
             if (progressError) throw progressError;
           }
 
@@ -457,6 +460,8 @@ export const useGameStore = create<GameStore>()(
       loadProgressFromCloud: async () => {
         const { user } = get();
         if (!user) return;
+
+        const supabase = getSupabaseClient();
 
         try {
           // Parallel loading
@@ -489,7 +494,7 @@ export const useGameStore = create<GameStore>()(
             const learnedIds = new Set<string>();
             const masteredIds = new Set<string>();
 
-            progressRes.data.forEach(p => {
+            progressRes.data.forEach((p: any) => {
               metadata[p.word_id] = {
                 srsLevel: p.srs_level,
                 isFavorite: p.is_favorite,

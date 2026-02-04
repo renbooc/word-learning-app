@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { useGameStore } from '@/stores/gameStore';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -38,6 +38,7 @@ export function AuthView() {
         setMessage(null);
 
         try {
+            const supabase = getSupabaseClient();
             if (isLogin) {
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { UserProfile } from '@/types';
@@ -28,6 +28,7 @@ export function AdminView() {
 
     const fetchData = async () => {
         setLoading(true);
+        const supabase = getSupabaseClient();
         const { data: profiles } = await supabase
             .from('profiles')
             .select('*')
@@ -36,8 +37,8 @@ export function AdminView() {
         if (profiles) {
             setUsers(profiles as UserProfile[]);
 
-            const totalPoints = profiles.reduce((sum, p) => sum + (p.total_points || 0), 0);
-            const totalLevel = profiles.reduce((sum, p) => sum + (p.level || 0), 0);
+            const totalPoints = profiles.reduce((sum: number, p: any) => sum + (p.total_points || 0), 0);
+            const totalLevel = profiles.reduce((sum: number, p: any) => sum + (p.level || 0), 0);
 
             setStats({
                 totalUsers: profiles.length,
@@ -51,7 +52,7 @@ export function AdminView() {
     const toggleAdmin = async (userId: string, currentRole: string) => {
         const newRole = currentRole === 'admin' ? 'user' : 'admin';
         if (confirm(`确定要将该用户的权限更改为 ${newRole} 吗？`)) {
-            const { error } = await supabase
+            const { error } = await getSupabaseClient()
                 .from('profiles')
                 .update({ role: newRole })
                 .eq('id', userId);

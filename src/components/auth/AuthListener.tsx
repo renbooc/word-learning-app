@@ -1,13 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useEffect, useState } from 'react';
+import { getSupabaseClient } from '@/lib/supabase';
 import { useGameStore } from '@/stores/gameStore';
 
 export function AuthListener() {
     const { setUser, setProfile, loadProgressFromCloud } = useGameStore();
+    const [supabase, setSupabase] = useState<ReturnType<typeof getSupabaseClient> | null>(null);
 
     useEffect(() => {
+        // 在客户端初始化 supabase 客户端
+        setSupabase(getSupabaseClient());
+    }, []);
+
+    useEffect(() => {
+        if (!supabase) return;
+
         // 1. 获取当前会话
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session?.user) {
@@ -45,7 +53,7 @@ export function AuthListener() {
         return () => {
             subscription.unsubscribe();
         };
-    }, [setUser, setProfile, loadProgressFromCloud]);
+    }, [supabase, setUser, setProfile, loadProgressFromCloud]);
 
     return null;
 }
