@@ -33,6 +33,7 @@ jobs:
           git config --global user.email "runner@github.com"
           git config --global user.name "GitHub Actions"
           git init
+          git checkout -b main
           git add .
           git commit -m "Deploy $(date -u +'%Y-%m-%d %H:%M:%S')"
           git push --force https://renbooc:$HF_TOKEN@huggingface.co/spaces/renbooc/word-learning-app main
