@@ -11,8 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          lfs: true
+          fetch-depth: 1
       
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -26,7 +25,12 @@ jobs:
       - name: Build
         run: npm run build
       
-      - name: Push to hub
+      - name: Deploy to Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN_WORD }}
-        run: git push --force https://renbooc:$HF_TOKEN@huggingface.co/spaces/renbooc/word-learning-app main
+        run: |
+          cd out
+          git init
+          git add .
+          git commit -m "Deploy $(date -u +'%Y-%m-%d %H:%M:%S')"
+          git push --force https://renbooc:$HF_TOKEN@huggingface.co/spaces/renbooc/word-learning-app main
