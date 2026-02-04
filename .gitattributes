@@ -4,3 +4,4 @@
 *.ckpt filter=lfs
 *.h5 filter=lfs
 *.model filter=lfs
+*.pdf filter=lfs
