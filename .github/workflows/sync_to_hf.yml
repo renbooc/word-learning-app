@@ -30,6 +30,8 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN_WORD }}
         run: |
           cd out
+          git config --global user.email "runner@github.com"
+          git config --global user.name "GitHub Actions"
           git init
           git add .
           git commit -m "Deploy $(date -u +'%Y-%m-%d %H:%M:%S')"
