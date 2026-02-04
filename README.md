@@ -2,7 +2,7 @@
 title: LexiFlow - Word Learning App
 emoji: 🎯
 colorFrom: indigo
-colorTo: rose
+colorTo: pink
 sdk: static
 app_file: src/app/page.tsx
 pinned: false
