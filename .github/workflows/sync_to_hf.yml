@@ -29,6 +29,7 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN_WORD }}
         run: |
+          cp README.md out/
           cd out
           git config --global user.email "runner@github.com"
           git config --global user.name "GitHub Actions"
