@@ -27,10 +27,14 @@ jobs:
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: |
-          echo "window.__RUNTIME_CONFIG__ = {" > public/runtime-config.js
-          echo "  NEXT_PUBLIC_SUPABASE_URL: '$SUPABASE_URL'," >> public/runtime-config.js
-          echo "  NEXT_PUBLIC_SUPABASE_ANON_KEY: '$SUPABASE_KEY'" >> public/runtime-config.js
-          echo "};" >> public/runtime-config.js
+          node -e "
+            const fs = require('fs');
+            const config = {
+              NEXT_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL || '',
+              NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_KEY || ''
+            };
+            fs.writeFileSync('public/runtime-config.js', 'window.__RUNTIME_CONFIG__ = ' + JSON.stringify(config, null, 2) + ';');
+          "
           cat public/runtime-config.js
       
       - name: Build
