@@ -22,10 +22,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
+      - name: Generate runtime config
+        run: |
+          echo "window.__RUNTIME_CONFIG__ = {
+            NEXT_PUBLIC_SUPABASE_URL: \"${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}\",
+            NEXT_PUBLIC_SUPABASE_ANON_KEY: \"${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}\"
+          };" > public/runtime-config.js
+          cat public/runtime-config.js
+      
       - name: Build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: npm run build
       
       - name: Deploy to Hugging Face Spaces
