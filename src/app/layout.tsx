@@ -24,7 +24,7 @@ export default function RootLayout({
               try {
                 const storage = localStorage.getItem('word-game-storage');
                 const theme = storage ? JSON.parse(storage).state.theme : 'system';
-                const actualTheme = theme === 'system' 
+                const actualTheme = theme === 'system'
                   ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
                   : theme;
                 document.documentElement.setAttribute('data-theme', actualTheme);

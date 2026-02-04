@@ -69,34 +69,38 @@ npm run dev
 
 ## 🚀 Huggingface Spaces 部署配置
 
-由于项目使用静态导出 (`output: 'export'`)，环境变量需要在**构建后**注入。
+由于项目使用静态导出 (`output: 'export'`)，环境变量需要在**构建时**注入。
 
-### 配置步骤：
+### 配置步骤（GitHub Actions 自动部署）：
 
-1. **在 Huggingface Spaces 的 Settings → Variables and secrets 中设置环境变量：**
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=your_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-   ```
+1. **在 GitHub 仓库中设置 Secrets：**
+   - 进入仓库 Settings → Secrets and variables → Actions
+   - 添加以下 Repository secrets：
+     - `NEXT_PUBLIC_SUPABASE_URL`: 你的 Supabase 项目 URL
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: 你的 Supabase 匿名密钥
+     - `HF_TOKEN_WORD`: 你的 Hugging Face Token（用于部署）
 
-2. **创建或修改 `public/runtime-config.js` 文件**（在项目根目录）：
-   ```javascript
-   window.__RUNTIME_CONFIG__ = {
-     NEXT_PUBLIC_SUPABASE_URL: "your_project_url",
-     NEXT_PUBLIC_SUPABASE_ANON_KEY: "your_anon_key"
-   };
-   ```
+2. **推送代码到 main 分支**，GitHub Actions 会自动构建并部署
 
-3. **重新部署项目**，`public/runtime-config.js` 会被自动复制到输出目录
+### 配置步骤（手动部署）：
 
-### 为什么需要这样做？
-静态导出的 Next.js 应用在构建时会将 `process.env` 变量内联到代码中。由于 Huggingface Spaces 的环境变量在构建后才可用，我们通过 `runtime-config.js` 在运行时注入配置。
+如果不想使用 GitHub Actions，可以手动修改 `public/runtime-config.js`：
+
+```javascript
+window.__RUNTIME_CONFIG__ = {
+  NEXT_PUBLIC_SUPABASE_URL: "https://your-project.supabase.co",
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: "your-anon-key"
+};
+```
+
+修改后重新构建并部署。
 
 ### 验证配置：
 部署完成后，打开浏览器开发者工具，在 Console 中输入：
 ```javascript
 window.__RUNTIME_CONFIG__
 ```
+确认显示正确的配置值。
 确认能正确显示你的 Supabase 配置。
 
 ## 🏗️ 技术架构
