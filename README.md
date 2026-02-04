@@ -4,7 +4,7 @@ emoji: 🎯
 colorFrom: indigo
 colorTo: pink
 sdk: static
-app_file: src/app/page.tsx
+app_file: index.html
 pinned: false
 license: mit
 short_description: 游戏化沉浸式英语学习平台
