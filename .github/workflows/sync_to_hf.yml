@@ -23,13 +23,11 @@ jobs:
         run: npm ci
       
       - name: Generate runtime config
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: |
-          cat > public/runtime-config.js << 'EOF'
-          window.__RUNTIME_CONFIG__ = {
-            NEXT_PUBLIC_SUPABASE_URL: "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}",
-            NEXT_PUBLIC_SUPABASE_ANON_KEY: "${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
-          };
-          EOF
+          printf 'window.__RUNTIME_CONFIG__ = {\n  NEXT_PUBLIC_SUPABASE_URL: "%s",\n  NEXT_PUBLIC_SUPABASE_ANON_KEY: "%s"\n};\n' "$SUPABASE_URL" "$SUPABASE_KEY" > public/runtime-config.js
           cat public/runtime-config.js
       
       - name: Build
